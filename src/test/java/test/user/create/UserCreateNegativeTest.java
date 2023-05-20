@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import functions.UserCreateFunctions;
 import org.junit.runners.Parameterized;
 import io.qameta.allure.junit4.DisplayName;
-import models.response.UserCreateResponseModel;
+import models.response.UserResponseModel;
 
 import static api.UserDeleteApi.requestDelete;
 
@@ -38,13 +38,13 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
     }
 
     Gson gson = new Gson();
-    UserCreateResponseModel responseModel;
+    UserResponseModel responseModel;
 
     @Test
     @DisplayName("Создание пользователя - проверка [дубликата пользователя]")
     public void userCreateCheckDuplicate() {
         responseModel = gson.fromJson(
-                getUserCreate(name, email, password, 200), UserCreateResponseModel.class);
+                getUserCreate(name, email, password, 200), UserResponseModel.class);
         Assert.assertTrue(getUserCreate(name, email, password, 403).contains("User already exists"));
         requestDelete(responseModel.getAccessToken());
     }
@@ -53,7 +53,7 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка обязательности поля name")
     public void userCreateCheckRequiredName() {
         responseModel = gson.fromJson(getUserCreate(null, email, password, 403),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertFalse(responseModel.success);
     }
 
@@ -61,7 +61,7 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка обязательности поля email")
     public void userCreateCheckRequiredEmail() {
         responseModel = gson.fromJson(getUserCreate(name, null, password, 403),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertFalse(responseModel.success);
     }
 
@@ -69,7 +69,7 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка обязательности поля password")
     public void userCreateCheckRequiredPassword() {
         responseModel = gson.fromJson(getUserCreate(name, email, null, 403),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertFalse(responseModel.success);
     }
 }

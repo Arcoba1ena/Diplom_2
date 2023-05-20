@@ -1,6 +1,6 @@
 package models.response;
 
-public class UserCreateResponseModel {
+public class UserResponseModel {
 
     public User user;
     public boolean success;

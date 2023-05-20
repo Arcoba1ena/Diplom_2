@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import functions.UserCreateFunctions;
 import org.junit.runners.Parameterized;
 import io.qameta.allure.junit4.DisplayName;
-import models.response.UserCreateResponseModel;
+import models.response.UserResponseModel;
 
 import static api.UserDeleteApi.requestDelete;
 
@@ -39,13 +39,13 @@ public class UserCreateTest extends UserCreateFunctions {
     }
 
     Gson gson = new Gson();
-    UserCreateResponseModel responseModel;
+    UserResponseModel responseModel;
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [name]")
     public void userCreateCheckName() {
         responseModel = gson.fromJson(getUserCreate(name, email, password, 200),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertEquals(name, responseModel.getUser().name);
     }
 
@@ -53,7 +53,7 @@ public class UserCreateTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка поля [email]")
     public void userCreateCheckEmail() {
         responseModel = gson.fromJson(getUserCreate(name, email, password, 200),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertEquals(email.toLowerCase(), responseModel.getUser().email.toLowerCase());
     }
 
@@ -61,7 +61,7 @@ public class UserCreateTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка поля [success]")
     public void userCreateCheckStatusResult() {
         responseModel = gson.fromJson(getUserCreate(name, email, password, 200),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertTrue(responseModel.success);
     }
 
@@ -69,7 +69,7 @@ public class UserCreateTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка содержания [accessToken]")
     public void userCreateCheckAccessToken() {
         responseModel = gson.fromJson(getUserCreate(name, email, password, 200),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertFalse(responseModel.getAccessToken().isEmpty());
     }
 
@@ -77,7 +77,7 @@ public class UserCreateTest extends UserCreateFunctions {
     @DisplayName("Создание пользователя - проверка содержания [refreshToken]")
     public void userCreateCheckRefreshToken() {
         responseModel = gson.fromJson(getUserCreate(name, email, password, 200),
-                UserCreateResponseModel.class);
+                UserResponseModel.class);
         Assert.assertFalse(responseModel.getRefreshToken().isEmpty());
     }
 
