@@ -1,17 +1,11 @@
-package functions;
+package api;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class RequestApi {
-
-    public void setUp() {
-        RestAssured.baseURI = "https://stellarburgers.nomoreparties.site/api/auth";
-    }
-
-    public Response requestPost(Object model, Integer code) {
+public class UserCreateApi extends RequestApi {
+    public String requestUserCreate(Object model, Integer code) {
         Response response = given()
                 .header("Content-type", "application/json")
                 .and()
@@ -19,6 +13,6 @@ public class RequestApi {
                 .when()
                 .post("/register");
         response.then().statusCode(code);
-        return response;
+        return response.getBody().asString();
     }
 }

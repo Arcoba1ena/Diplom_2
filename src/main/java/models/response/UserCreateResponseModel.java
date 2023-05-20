@@ -7,17 +7,6 @@ public class UserCreateResponseModel {
     public String accessToken;
     public String refreshToken;
 
-
-    public UserCreateResponseModel(User user, boolean success, String accessToken, String refreshToken) {
-        this.user = user;
-        this.success = success;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-    }
-
-    public UserCreateResponseModel() {
-    }
-
     public User getUser() {
         return user;
     }
