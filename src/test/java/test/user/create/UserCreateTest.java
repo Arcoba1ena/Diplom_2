@@ -9,8 +9,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import functions.user.UserCreateFunctions;
-import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
+import models.response.user.UserResponseModel;
 
 import static functions.Util.deserialize;
 import static functions.user.UserDeleteFunctions.getUserDelete;

@@ -16,4 +16,16 @@ public class OrdersCreateApi extends RequestApi {
         response.then().statusCode(code);
         return response.getBody().asString();
     }
+
+    public String requestOrdersCreate(Object model, String token, Integer code) {
+        Response response = given().auth()
+                .oauth2(token.replace("Bearer ", ""))
+                .header("Content-type", "application/json")
+                .and()
+                .body(model)
+                .when()
+                .post("/orders");
+        response.then().statusCode(code);
+        return response.getBody().asString();
+    }
 }
