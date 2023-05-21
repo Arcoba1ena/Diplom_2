@@ -2,7 +2,7 @@ package api;
 
 import static io.restassured.RestAssured.given;
 
-public class UserDeleteApi extends RequestApi{
+public class UserDeleteApi  extends RequestApi {
     public static void requestDelete(String token) {
         given().auth()
                 .oauth2(token.replace("Bearer ",""))

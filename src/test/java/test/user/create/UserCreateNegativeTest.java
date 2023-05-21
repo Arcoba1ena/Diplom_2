@@ -1,16 +1,18 @@
 package test.user.create;
 
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.Before;
-import com.google.gson.Gson;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
-import functions.UserCreateFunctions;
 import org.junit.runners.Parameterized;
-import io.qameta.allure.junit4.DisplayName;
+import org.junit.runners.Parameterized.Parameters;
+
+import functions.UserCreateFunctions;
 import models.response.UserResponseModel;
+import io.qameta.allure.junit4.DisplayName;
 
 import static api.UserDeleteApi.requestDelete;
+import static functions.base.Util.deserialize;
 
 @RunWith(Parameterized.class)
 public class UserCreateNegativeTest extends UserCreateFunctions {
@@ -30,46 +32,51 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
         this.password = password;
     }
 
-    @Parameterized.Parameters(name = "Тестовые данные: {0},{1},{2}")
+    @Parameters(name = "Тестовые данные: {0},{1},{2}")
     public static Object[][] getTestData() {
         return new Object[][]{
                 {"nameTestUser", "nickNameUser@yandex.ru", "testUser!P@sw0rd"}
         };
     }
 
-    Gson gson = new Gson();
     UserResponseModel responseModel;
 
     @Test
     @DisplayName("Создание пользователя - проверка [дубликата пользователя]")
     public void userCreateCheckDuplicate() {
-        responseModel = gson.fromJson(
-                getUserCreate(name, email, password, 200), UserResponseModel.class);
-        Assert.assertTrue(getUserCreate(name, email, password, 403).contains("User already exists"));
+        responseModel = deserialize(getUserCreate(name, email, password, 200),
+                UserResponseModel.class);
+
+        Assert.assertTrue(getUserCreate(name, email, password, 403)
+                .contains("User already exists"));
+
         requestDelete(responseModel.getAccessToken());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля name")
     public void userCreateCheckRequiredName() {
-        responseModel = gson.fromJson(getUserCreate(null, email, password, 403),
+        responseModel = deserialize(getUserCreate(null, email, password, 403),
                 UserResponseModel.class);
+
         Assert.assertFalse(responseModel.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля email")
     public void userCreateCheckRequiredEmail() {
-        responseModel = gson.fromJson(getUserCreate(name, null, password, 403),
+        responseModel = deserialize(getUserCreate(name, null, password, 403),
                 UserResponseModel.class);
+
         Assert.assertFalse(responseModel.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля password")
     public void userCreateCheckRequiredPassword() {
-        responseModel = gson.fromJson(getUserCreate(name, email, null, 403),
+        responseModel = deserialize(getUserCreate(name, email, null, 403),
                 UserResponseModel.class);
+
         Assert.assertFalse(responseModel.success);
     }
 }
