@@ -2,16 +2,16 @@ package models.response;
 
 public class UserResponseModel {
 
-    public User user;
+    public UserModel user;
     public boolean success;
     public String accessToken;
     public String refreshToken;
 
-    public User getUser() {
+    public UserModel getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserModel user) {
         this.user = user;
     }
 

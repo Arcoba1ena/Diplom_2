@@ -40,43 +40,44 @@ public class UserLoginTest extends UserLoginFunctions {
         };
     }
 
-    UserResponseModel loginResponse;
+    UserResponseModel responseLogin;
+    UserResponseModel responseCreate;
     UserCreateFunctions userCreate = new UserCreateFunctions();
 
     @Test
     @DisplayName("Авторизация пользователя - проверка под существующим пользователем")
-    public void userCreateCheckAuth() {
+    public void userLoginCheckAuth() {
         userCreate.getUserCreate(name, email, password, 200);
-        loginResponse = deserialize(getUserLogin(email, password, 200),
+        responseLogin = deserialize(getUserLogin(email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertTrue(loginResponse.success);
-        requestDelete(loginResponse.getAccessToken());
+        Assert.assertTrue(responseLogin.success);
+        requestDelete(responseLogin.getAccessToken());
     }
 
     @Test
     @DisplayName("Авторизация пользователя - авторизация с неверным email")
-    public void userCreateCheckUnValidEmail() {
-        UserResponseModel createResponse = deserialize(userCreate.getUserCreate(name, email, password, 200),
+    public void userLoginCheckUnValidEmail() {
+        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        loginResponse = deserialize(getUserLogin(email + "/", password, 401),
+        responseLogin = deserialize(getUserLogin(email + "/", password, 401),
                 UserResponseModel.class);
 
-        Assert.assertFalse(loginResponse.success);
-        requestDelete(createResponse.getAccessToken());
+        Assert.assertFalse(responseLogin.success);
+        requestDelete(responseCreate.getAccessToken());
     }
 
     @Test
     @DisplayName("Авторизация пользователя - авторизация с неверным password")
-    public void userCreateCheckUnValidPassword() {
-        UserResponseModel createResponse = deserialize(userCreate.getUserCreate(name, email, password, 200),
+    public void userLoginCheckUnValidPassword() {
+        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        loginResponse = deserialize(getUserLogin(email, password + "/", 401),
+        responseLogin = deserialize(getUserLogin(email, password + "/", 401),
                 UserResponseModel.class);
 
-        Assert.assertFalse(loginResponse.success);
-        requestDelete(createResponse.getAccessToken());
+        Assert.assertFalse(responseLogin.success);
+        requestDelete(responseCreate.getAccessToken());
     }
 }

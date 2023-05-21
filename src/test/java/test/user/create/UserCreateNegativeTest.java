@@ -39,44 +39,44 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
         };
     }
 
-    UserResponseModel responseModel;
+    UserResponseModel response;
 
     @Test
     @DisplayName("Создание пользователя - проверка [дубликата пользователя]")
     public void userCreateCheckDuplicate() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
         Assert.assertTrue(getUserCreate(name, email, password, 403)
                 .contains("User already exists"));
 
-        requestDelete(responseModel.getAccessToken());
+        requestDelete(response.getAccessToken());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля name")
     public void userCreateCheckRequiredName() {
-        responseModel = deserialize(getUserCreate(null, email, password, 403),
+        response = deserialize(getUserCreate(null, email, password, 403),
                 UserResponseModel.class);
 
-        Assert.assertFalse(responseModel.success);
+        Assert.assertFalse(response.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля email")
     public void userCreateCheckRequiredEmail() {
-        responseModel = deserialize(getUserCreate(name, null, password, 403),
+        response = deserialize(getUserCreate(name, null, password, 403),
                 UserResponseModel.class);
 
-        Assert.assertFalse(responseModel.success);
+        Assert.assertFalse(response.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля password")
     public void userCreateCheckRequiredPassword() {
-        responseModel = deserialize(getUserCreate(name, email, null, 403),
+        response = deserialize(getUserCreate(name, email, null, 403),
                 UserResponseModel.class);
 
-        Assert.assertFalse(responseModel.success);
+        Assert.assertFalse(response.success);
     }
 }

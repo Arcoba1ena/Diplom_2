@@ -40,55 +40,55 @@ public class UserCreateTest extends UserCreateFunctions {
         };
     }
 
-    UserResponseModel responseModel;
+    UserResponseModel response;
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [name]")
     public void userCreateCheckName() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertEquals(name, responseModel.getUser().name);
+        Assert.assertEquals(name, response.getUser().name);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [email]")
     public void userCreateCheckEmail() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertEquals(email.toLowerCase(), responseModel.getUser().email.toLowerCase());
+        Assert.assertEquals(email.toLowerCase(), response.getUser().email.toLowerCase());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [success]")
     public void userCreateCheckStatusResult() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertTrue(responseModel.success);
+        Assert.assertTrue(response.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка содержания [accessToken]")
     public void userCreateCheckAccessToken() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertFalse(responseModel.getAccessToken().isEmpty());
+        Assert.assertFalse(response.getAccessToken().isEmpty());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка содержания [refreshToken]")
     public void userCreateCheckRefreshToken() {
-        responseModel = deserialize(getUserCreate(name, email, password, 200),
+        response = deserialize(getUserCreate(name, email, password, 200),
                 UserResponseModel.class);
 
-        Assert.assertFalse(responseModel.getRefreshToken().isEmpty());
+        Assert.assertFalse(response.getRefreshToken().isEmpty());
     }
 
     @After
     public void userDelete() {
-        requestDelete(responseModel.getAccessToken());
+        requestDelete(response.getAccessToken());
     }
 }

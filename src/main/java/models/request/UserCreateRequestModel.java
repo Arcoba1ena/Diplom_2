@@ -1,9 +1,9 @@
 package models.request;
 
 public class UserCreateRequestModel {
-    private String name;
-    private String email;
-    private String password;
+    public String name;
+    public String email;
+    public String password;
 
     public UserCreateRequestModel(String name, String email, String password) {
         this.name = name;

@@ -1,6 +1,6 @@
 package models.response;
 
-public class User {
+public class UserModel {
     public String name;
     public String email;
 }
