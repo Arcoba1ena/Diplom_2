@@ -1,6 +1,6 @@
-package functions;
+package functions.user;
 
-import api.UserDeleteApi;
+import api.user.UserDeleteApi;
 
 public class UserDeleteFunctions extends UserDeleteApi {
     public static void getUserDelete(String token){

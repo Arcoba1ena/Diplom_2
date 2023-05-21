@@ -1,4 +1,6 @@
-package api;
+package api.user;
+
+import api.RequestApi;
 
 import static io.restassured.RestAssured.given;
 
@@ -8,7 +10,7 @@ public class UserDeleteApi extends RequestApi {
                 .oauth2(token.replace("Bearer ", ""))
                 .header("Content-type", "application/json")
                 .when()
-                .delete("/user")
+                .delete("/auth/user")
                 .then().statusCode(202);
     }
 
@@ -16,7 +18,7 @@ public class UserDeleteApi extends RequestApi {
         given()
                 .header("Content-type", "application/json")
                 .when()
-                .delete("/user")
+                .delete("/auth/user")
                 .then().statusCode(401);
     }
 }

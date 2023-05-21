@@ -8,22 +8,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import functions.UserUpdateFunctions;
-import functions.UserCreateFunctions;
-import models.response.UserResponseModel;
+import functions.user.UserUpdateFunctions;
+import functions.user.UserCreateFunctions;
+import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
-import models.response.UserErrorResponseModel;
-import models.response.UserUpdateResponseModel;
+import models.response.user.UserErrorResponseModel;
+import models.response.user.UserUpdateResponseModel;
 
 import static functions.Util.*;
-import static functions.UserDeleteFunctions.getUserDelete;
+import static functions.user.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserUpdateTest extends UserUpdateFunctions {
 
     @Before
     public void domain() {
-        setUp();
+        apiEndPoint();
     }
 
     private final String name;

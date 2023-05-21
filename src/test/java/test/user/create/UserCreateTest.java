@@ -8,19 +8,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import functions.UserCreateFunctions;
-import models.response.UserResponseModel;
+import functions.user.UserCreateFunctions;
+import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 
 import static functions.Util.deserialize;
-import static functions.UserDeleteFunctions.getUserDelete;
+import static functions.user.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserCreateTest extends UserCreateFunctions {
 
     @Before
     public void domain() {
-        setUp();
+        apiEndPoint();
     }
 
     private final String name;
@@ -85,6 +85,43 @@ public class UserCreateTest extends UserCreateFunctions {
                 UserResponseModel.class);
 
         Assert.assertFalse(response.getRefreshToken().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Создание пользователя - проверка [дубликата пользователя]")
+    public void userCreateCheckDuplicate() {
+        response = deserialize(getUserCreate(name, email, password, 200),
+                UserResponseModel.class);
+
+        Assert.assertTrue(getUserCreate(name, email, password, 403)
+                .contains("User already exists"));
+    }
+
+    @Test
+    @DisplayName("Создание пользователя - проверка обязательности поля name")
+    public void userCreateCheckRequiredName() {
+        response = deserialize(getUserCreate(null, email, password, 403),
+                UserResponseModel.class);
+
+        Assert.assertFalse(response.success);
+    }
+
+    @Test
+    @DisplayName("Создание пользователя - проверка обязательности поля email")
+    public void userCreateCheckRequiredEmail() {
+        response = deserialize(getUserCreate(name, null, password, 403),
+                UserResponseModel.class);
+
+        Assert.assertFalse(response.success);
+    }
+
+    @Test
+    @DisplayName("Создание пользователя - проверка обязательности поля password")
+    public void userCreateCheckRequiredPassword() {
+        response = deserialize(getUserCreate(name, email, null, 403),
+                UserResponseModel.class);
+
+        Assert.assertFalse(response.success);
     }
 
     @After

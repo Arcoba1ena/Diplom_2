@@ -1,4 +1,4 @@
-package models.request;
+package models.request.user;
 
 public class UserLoginRequestModel {
     public String email;

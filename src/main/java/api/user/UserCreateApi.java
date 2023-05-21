@@ -1,5 +1,6 @@
-package api;
+package api.user;
 
+import api.RequestApi;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -11,7 +12,7 @@ public class UserCreateApi extends RequestApi {
                 .and()
                 .body(model)
                 .when()
-                .post("/register");
+                .post("/auth/register");
         response.then().statusCode(code);
         return response.getBody().asString();
     }

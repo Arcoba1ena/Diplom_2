@@ -1,4 +1,4 @@
-package models.response;
+package models.response.user;
 
 public class UserErrorResponseModel {
     public boolean success;

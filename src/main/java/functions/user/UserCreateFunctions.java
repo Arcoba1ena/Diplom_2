@@ -1,7 +1,7 @@
-package functions;
+package functions.user;
 
-import api.UserCreateApi;
-import models.request.UserCreateRequestModel;
+import api.user.UserCreateApi;
+import models.request.user.UserCreateRequestModel;
 
 public class UserCreateFunctions extends UserCreateApi {
     public String getUserCreate(String name, String email, String password, Integer code) {

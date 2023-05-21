@@ -1,4 +1,4 @@
-package models.request;
+package models.request.user;
 
 public class UserUpdateRequestModel {
     public String name;

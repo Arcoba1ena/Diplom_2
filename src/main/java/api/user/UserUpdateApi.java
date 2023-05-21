@@ -1,5 +1,6 @@
-package api;
+package api.user;
 
+import api.RequestApi;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -13,7 +14,7 @@ public class UserUpdateApi extends RequestApi {
                 .and()
                 .body(model)
                 .when()
-                .patch("/user");
+                .patch("/auth/user");
         response.then().statusCode(code);
         return response.getBody().asString();
     }
@@ -24,7 +25,7 @@ public class UserUpdateApi extends RequestApi {
                 .and()
                 .body(model)
                 .when()
-                .patch("/user");
+                .patch("/auth/user");
         response.then().statusCode(code);
         return response.getBody().asString();
     }

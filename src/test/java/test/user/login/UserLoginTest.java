@@ -8,20 +8,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import functions.UserLoginFunctions;
-import functions.UserCreateFunctions;
-import models.response.UserResponseModel;
+import functions.user.UserLoginFunctions;
+import functions.user.UserCreateFunctions;
+import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 
 import static functions.Util.deserialize;
-import static functions.UserDeleteFunctions.getUserDelete;
+import static functions.user.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserLoginTest extends UserLoginFunctions {
 
     @Before
     public void domain() {
-        setUp();
+        apiEndPoint();
     }
 
     private final String name;
