@@ -1,6 +1,7 @@
 package test.user.create;
 
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -11,8 +12,8 @@ import functions.UserCreateFunctions;
 import models.response.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 
-import static api.UserDeleteApi.requestDelete;
-import static functions.base.Util.deserialize;
+import static functions.Util.deserialize;
+import static functions.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserCreateNegativeTest extends UserCreateFunctions {
@@ -49,8 +50,6 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
 
         Assert.assertTrue(getUserCreate(name, email, password, 403)
                 .contains("User already exists"));
-
-        requestDelete(response.getAccessToken());
     }
 
     @Test
@@ -78,5 +77,10 @@ public class UserCreateNegativeTest extends UserCreateFunctions {
                 UserResponseModel.class);
 
         Assert.assertFalse(response.success);
+    }
+
+    @After
+    public void userDelete() {
+        getUserDelete(response.getAccessToken());
     }
 }

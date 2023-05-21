@@ -12,8 +12,8 @@ import functions.UserCreateFunctions;
 import models.response.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 
-import static api.UserDeleteApi.requestDelete;
-import static functions.base.Util.deserialize;
+import static functions.Util.deserialize;
+import static functions.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserCreateTest extends UserCreateFunctions {
@@ -89,6 +89,6 @@ public class UserCreateTest extends UserCreateFunctions {
 
     @After
     public void userDelete() {
-        requestDelete(response.getAccessToken());
+        getUserDelete(response.getAccessToken());
     }
 }

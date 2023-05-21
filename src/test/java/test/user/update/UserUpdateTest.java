@@ -1,20 +1,22 @@
 package test.user.update;
 
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import functions.UserCreateFunctions;
 import functions.UserUpdateFunctions;
+import functions.UserCreateFunctions;
 import models.response.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 import models.response.UserErrorResponseModel;
 import models.response.UserUpdateResponseModel;
 
-import static functions.base.Util.*;
-import static api.UserDeleteApi.requestDelete;
+import static functions.Util.*;
+import static functions.UserDeleteFunctions.getUserDelete;
 
 @RunWith(Parameterized.class)
 public class UserUpdateTest extends UserUpdateFunctions {
@@ -61,7 +63,7 @@ public class UserUpdateTest extends UserUpdateFunctions {
         responseUpdate = deserialize(getUserUpdate(updName, email, responseCreate.getAccessToken(), 200),
                 UserUpdateResponseModel.class);
 
-        requestDelete(responseCreate.getAccessToken());
+        Assert.assertEquals(updName, responseUpdate.user.name);
     }
 
     @Test
@@ -72,6 +74,24 @@ public class UserUpdateTest extends UserUpdateFunctions {
 
         responseUpdate = deserialize(getUserUpdate(name, updEmail, responseCreate.getAccessToken(), 200),
                 UserUpdateResponseModel.class);
-        requestDelete(responseCreate.getAccessToken());
+
+        Assert.assertEquals(updEmail.toLowerCase(), responseUpdate.user.email.toLowerCase());
+    }
+
+    @Test
+    @DisplayName("Обновление пользователя - проверка обновления поля [email]")
+    public void userUpdateCheckWithOutAuth() {
+        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
+                UserResponseModel.class);
+
+        responseError = deserialize(getUserUpdate(updName, updEmail, null, 401),
+                UserErrorResponseModel.class);
+
+        Assert.assertEquals("You should be authorised", responseError.message);
+    }
+
+    @After
+    public void userDelete() {
+        getUserDelete(responseCreate.getAccessToken());
     }
 }

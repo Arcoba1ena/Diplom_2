@@ -1,4 +1,4 @@
-package functions.base;
+package functions;
 
 import com.google.gson.Gson;
 
