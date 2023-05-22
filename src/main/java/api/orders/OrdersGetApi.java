@@ -4,27 +4,22 @@ import api.RequestApi;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
-
-public class OrdersCreateApi extends RequestApi {
-    public String requestOrdersCreate(Object model, Integer code) {
+public class OrdersGetApi extends RequestApi {
+    public String requestOrdersGet(Integer code) {
         Response response = given()
                 .header("Content-type", "application/json")
-                .and()
-                .body(model)
                 .when()
-                .post("/orders");
+                .get("/orders");
         response.then().statusCode(code);
         return response.getBody().asString();
     }
 
-    public String requestOrdersCreate(Object model, String token, Integer code) {
+    public String requestOrdersGet(String token, Integer code) {
         Response response = given().auth()
                 .oauth2(token.replace("Bearer ", ""))
                 .header("Content-type", "application/json")
-                .and()
-                .body(model)
                 .when()
-                .post("/orders");
+                .get("/orders");
         response.then().statusCode(code);
         return response.getBody().asString();
     }

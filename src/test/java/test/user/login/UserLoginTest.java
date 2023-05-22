@@ -22,6 +22,7 @@ public class UserLoginTest extends UserLoginFunctions {
     @Before
     public void domain() {
         apiEndPoint();
+        getUserLogin();
     }
 
     private final String name;
@@ -41,43 +42,36 @@ public class UserLoginTest extends UserLoginFunctions {
         };
     }
 
-    UserResponseModel responseLogin;
-    UserResponseModel responseCreate;
+    private UserResponseModel responseLogin;
+    private UserResponseModel responseCreate;
     UserCreateFunctions userCreate = new UserCreateFunctions();
 
-    @Test
-    @DisplayName("Авторизация пользователя - проверка под существующим пользователем")
-    public void userLoginCheckAuth() {
-       responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-               UserResponseModel.class);
+    public void getUserLogin(){
+        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
+                UserResponseModel.class);
+    }
 
+    @Test
+    @DisplayName("Авторизация пользователя - авторизация пользователя")
+    public void userLoginCheckAuth() {
         responseLogin = deserialize(getUserLogin(email, password, 200),
                 UserResponseModel.class);
-
         Assert.assertTrue(responseLogin.success);
     }
 
     @Test
-    @DisplayName("Авторизация пользователя - авторизация с неверным email")
+    @DisplayName("Авторизация пользователя - авторизация с неверным [email]")
     public void userLoginCheckUnValidEmail() {
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
-
         responseLogin = deserialize(getUserLogin(email + "/", password, 401),
                 UserResponseModel.class);
-
         Assert.assertFalse(responseLogin.success);
     }
 
     @Test
-    @DisplayName("Авторизация пользователя - авторизация с неверным password")
+    @DisplayName("Авторизация пользователя - авторизация с неверным [password]")
     public void userLoginCheckUnValidPassword() {
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
-
         responseLogin = deserialize(getUserLogin(email, password + "/", 401),
                 UserResponseModel.class);
-
         Assert.assertFalse(responseLogin.success);
     }
 

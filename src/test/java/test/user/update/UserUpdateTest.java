@@ -10,8 +10,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 import functions.user.UserUpdateFunctions;
 import functions.user.UserCreateFunctions;
-import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
+import models.response.user.UserResponseModel;
 import models.response.user.UserErrorResponseModel;
 import models.response.user.UserUpdateResponseModel;
 
@@ -24,6 +24,7 @@ public class UserUpdateTest extends UserUpdateFunctions {
     @Before
     public void domain() {
         apiEndPoint();
+        getUserCreate();
     }
 
     private final String name;
@@ -48,45 +49,37 @@ public class UserUpdateTest extends UserUpdateFunctions {
         };
     }
 
+    private UserResponseModel responseCreate;
+    private UserUpdateResponseModel responseUpdate;
+
     UserCreateFunctions userCreate = new UserCreateFunctions();
 
-    UserResponseModel responseCreate;
-    UserErrorResponseModel responseError;
-    UserUpdateResponseModel responseUpdate;
+    public void getUserCreate(){
+        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
+                UserResponseModel.class);
+    }
 
     @Test
     @DisplayName("Обновление пользователя - проверка обновления поля [name]")
     public void userUpdateCheckName() {
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
-
         responseUpdate = deserialize(getUserUpdate(updName, email, responseCreate.getAccessToken(), 200),
                 UserUpdateResponseModel.class);
-
         Assert.assertEquals(updName, responseUpdate.user.name);
     }
 
     @Test
     @DisplayName("Обновление пользователя - проверка обновления поля [email]")
     public void userUpdateCheckEmail() {
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
-
         responseUpdate = deserialize(getUserUpdate(name, updEmail, responseCreate.getAccessToken(), 200),
                 UserUpdateResponseModel.class);
-
         Assert.assertEquals(updEmail.toLowerCase(), responseUpdate.user.email.toLowerCase());
     }
 
     @Test
     @DisplayName("Обновление пользователя - проверка обновления поля [email]")
     public void userUpdateCheckWithOutAuth() {
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
-
-        responseError = deserialize(getUserUpdate(updName, updEmail, null, 401),
+        UserErrorResponseModel responseError = deserialize(getUserUpdate(updName, updEmail, null, 401),
                 UserErrorResponseModel.class);
-
         Assert.assertEquals("You should be authorised", responseError.message);
     }
 
