@@ -5,9 +5,9 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import io.restassured.response.Response;
 
 import java.util.ArrayList;
-
 import functions.user.UserCreateFunctions;
 import io.qameta.allure.junit4.DisplayName;
 import functions.orders.OrdersCreateFunctions;
@@ -61,16 +61,18 @@ public class OrdersCreateTest extends OrdersCreateFunctions {
     }
 
     public void getUserCreate() {
-        responseUserCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
+        Response response = userCreate.getUserCreate(name, email, password);
+        responseUserCreate = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,200);
     }
 
     @Test
     @DisplayName("Создание заказа - без авторизации")
     public void ordersCreateWithOutAuth() {
-        OrdersResponseModel responseOrdersCreate = deserialize(getOrdersCreate(addIngredient(), null,200),
-                OrdersResponseModel.class);
+        Response response = getOrdersCreate(addIngredient(), null);
+        OrdersResponseModel responseOrdersCreate = deserialize(response.getBody().asString(),OrdersResponseModel.class);
 
+        checkStatusCode(response,200);
         Assert.assertEquals("Spicy минеральный бургер", responseOrdersCreate.name);
     }
 
@@ -78,9 +80,10 @@ public class OrdersCreateTest extends OrdersCreateFunctions {
     @DisplayName("Создание заказа - c авторизацией, проверка пля [ingredients.name]")
     public void ordersCreateCheckIngredients() {
         getUserCreate();
-        responseOrdersAuth = deserialize(getOrdersCreate(addIngredient(), responseUserCreate.getAccessToken(),200),
-                OrdersResponseAuthModel.class);
+        Response response =getOrdersCreate(addIngredient(), responseUserCreate.getAccessToken());
+        responseOrdersAuth = deserialize(response.getBody().asString(),OrdersResponseAuthModel.class);
 
+        checkStatusCode(response,200);
         getUserDelete(responseUserCreate.getAccessToken());
         Assert.assertEquals("Соус Spicy-X", responseOrdersAuth.order.ingredients.get(0).name);
     }
@@ -89,9 +92,10 @@ public class OrdersCreateTest extends OrdersCreateFunctions {
     @DisplayName("Создание заказа - c авторизацией, проверка поля [order.name]")
     public void ordersCreateCheckOrder() {
         getUserCreate();
-        responseOrdersAuth = deserialize(getOrdersCreate(addIngredient(), responseUserCreate.getAccessToken(),200),
-                OrdersResponseAuthModel.class);
+        Response response = getOrdersCreate(addIngredient(), responseUserCreate.getAccessToken());
+        responseOrdersAuth = deserialize(response.getBody().asString(), OrdersResponseAuthModel.class);
 
+        checkStatusCode(response,200);
         getUserDelete(responseUserCreate.getAccessToken());
         Assert.assertEquals("Spicy минеральный бургер", responseOrdersAuth.order.name);
     }
@@ -99,8 +103,9 @@ public class OrdersCreateTest extends OrdersCreateFunctions {
     @Test
     @DisplayName("Создание заказа - без ингредиентов")
     public void ordersCreateWithOutParams() {
-        Assert.assertTrue(getOrdersCreate(new ArrayList<>(), null, 400)
-                .contains("Ingredient ids must be provided"));
+        Response response = getOrdersCreate(new ArrayList<>(), null);
+        checkStatusCode(response,400);
+        Assert.assertTrue(response.getBody().asString().contains("Ingredient ids must be provided"));
     }
 
     @Test
@@ -108,6 +113,8 @@ public class OrdersCreateTest extends OrdersCreateFunctions {
     public void ordersCreateUnValidHash() {
         ArrayList<String> ingredients = new ArrayList<>();
         ingredients.add(ingredientMain + "/");
-        Assert.assertTrue(getOrdersCreate(ingredients, null, 500).contains("Internal Server Error"));
+        Response response = getOrdersCreate(ingredients, null);
+        checkStatusCode(response, 500);
+        Assert.assertTrue(response.getBody().asString().contains("Internal Server Error"));
     }
 }

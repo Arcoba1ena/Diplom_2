@@ -10,14 +10,12 @@ public class UserLoginApi extends RequestApi {
     private final static String method = "/auth/login";
 
     @Step("request POST | method '/auth/login'")
-    public String requestUserLogin(Object model, Integer code) {
-        Response response = given()
+    public Response requestUserLogin(Object model) {
+        return given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(model)
                 .when()
                 .post(method);
-        response.then().statusCode(code);
-        return response.getBody().asString();
     }
 }

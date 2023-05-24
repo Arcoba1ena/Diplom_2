@@ -14,8 +14,7 @@ public class UserDeleteApi extends RequestApi {
                 .oauth2(token.replace("Bearer ", ""))
                 .header("Content-type", "application/json")
                 .when()
-                .delete(method)
-                .then().statusCode(202);
+                .delete(method);
     }
 
     @Step("request DELETE | method '/auth/user' [without token]")
@@ -23,7 +22,6 @@ public class UserDeleteApi extends RequestApi {
         given()
                 .header("Content-type", "application/json")
                 .when()
-                .delete(method)
-                .then().statusCode(401);
+                .delete(method);
     }
 }

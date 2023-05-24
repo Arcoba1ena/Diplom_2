@@ -1,5 +1,6 @@
 package test.user.create;
 
+import io.restassured.response.Response;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +13,7 @@ import functions.user.UserCreateFunctions;
 import io.qameta.allure.junit4.DisplayName;
 import models.response.user.UserResponseModel;
 
+import static functions.Util.checkStatusCode;
 import static functions.Util.deserialize;
 import static functions.user.UserDeleteFunctions.getUserDelete;
 
@@ -41,45 +43,46 @@ public class UserCreateTest extends UserCreateFunctions {
         };
     }
 
-    private UserResponseModel response;
+    private UserResponseModel responseModel;
 
     public void getUserCreate() {
-        response = deserialize(getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
+        Response response = getUserCreate(name, email, password);
+        responseModel = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,200);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [name]")
     public void userCreateCheckName() {
-        Assert.assertEquals(name, response.getUser().name);
+        Assert.assertEquals(name, responseModel.getUser().name);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [email]")
     public void userCreateCheckEmail() {
-        Assert.assertEquals(email.toLowerCase(), response.getUser().email.toLowerCase());
+        Assert.assertEquals(email.toLowerCase(), responseModel.getUser().email.toLowerCase());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка поля [success]")
     public void userCreateCheckStatusResult() {
-        Assert.assertTrue(response.success);
+        Assert.assertTrue(responseModel.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка содержания [accessToken]")
     public void userCreateCheckAccessToken() {
-        Assert.assertFalse(response.getAccessToken().isEmpty());
+        Assert.assertFalse(responseModel.getAccessToken().isEmpty());
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка содержания [refreshToken]")
     public void userCreateCheckRefreshToken() {
-        Assert.assertFalse(response.getRefreshToken().isEmpty());
+        Assert.assertFalse(responseModel.getRefreshToken().isEmpty());
     }
 
     @After
     public void userDelete() {
-        getUserDelete(response.getAccessToken());
+        getUserDelete(responseModel.getAccessToken());
     }
 }

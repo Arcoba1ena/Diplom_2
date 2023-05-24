@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import io.restassured.response.Response;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import models.response.user.UserResponseModel;
 import functions.orders.OrdersCreateFunctions;
 import models.response.orders.auth.OrdersGetResponseModel;
 
+import static functions.Util.checkStatusCode;
 import static functions.Util.deserialize;
 import static functions.user.UserDeleteFunctions.getUserDelete;
 
@@ -55,12 +57,14 @@ public class OrdersGetTest extends OrdersGetFunctions {
     OrdersCreateFunctions ordersCreate = new OrdersCreateFunctions();
 
     public void getCreateUser(){
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
+        Response response = userCreate.getUserCreate(name, email, password);
+        responseCreate = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,200);
     }
 
     public void getCreateOrder(){
-        ordersCreate.getOrdersCreate(ingredients(), responseCreate.getAccessToken(), 200);
+        Response response = ordersCreate.getOrdersCreate(ingredients(), responseCreate.getAccessToken());
+        checkStatusCode(response,200);
     }
 
     public ArrayList<String> ingredients(){
@@ -72,40 +76,45 @@ public class OrdersGetTest extends OrdersGetFunctions {
     @Test
     @DisplayName("Получение заказа пользователя - пользователь авторизован, проверка поля[success]")
     public void orderGetSuccess() {
-        responseGet = deserialize(getOrders(responseCreate.getAccessToken(),200),
-                OrdersGetResponseModel.class);
+        Response response = getOrders(responseCreate.getAccessToken());
+        responseGet = deserialize(response.getBody().asString(), OrdersGetResponseModel.class);
+        checkStatusCode(response,200);
         Assert.assertTrue(responseGet.success);
     }
 
     @Test
     @DisplayName("Получение заказов конкретного пользователя - авторизованный пользователь, проверка поля[name]")
     public void orderGetName() {
-        responseGet = deserialize(getOrders(responseCreate.getAccessToken(),200),
-                OrdersGetResponseModel.class);
+        Response response = getOrders(responseCreate.getAccessToken());
+        responseGet = deserialize(response.getBody().asString(), OrdersGetResponseModel.class);
+        checkStatusCode(response,200);
         Assert.assertEquals("Spicy бургер", responseGet.orders.get(0).name);
     }
 
     @Test
     @DisplayName("Получение заказов конкретного пользователя - авторизованный пользователь, проверка поля[name]")
     public void orderGetStatus() {
-        responseGet = deserialize(getOrders(responseCreate.getAccessToken(),200),
-                OrdersGetResponseModel.class);
+        Response response = getOrders(responseCreate.getAccessToken());
+        responseGet = deserialize(response.getBody().asString(), OrdersGetResponseModel.class);
+        checkStatusCode(response,200);
         Assert.assertEquals("done", responseGet.orders.get(0).status);
     }
 
     @Test
     @DisplayName("Получение заказов конкретного пользователя - авторизованный пользователь, проверка поля[name]")
     public void orderGetIngredients() {
-        responseGet = deserialize(getOrders(responseCreate.getAccessToken(),200),
-                OrdersGetResponseModel.class);
+        Response response = getOrders(responseCreate.getAccessToken());
+        responseGet = deserialize(response.getBody().asString(), OrdersGetResponseModel.class);
+        checkStatusCode(response,200);
         Assert.assertEquals(ingredient, responseGet.orders.get(0).ingredients.get(0));
     }
 
     @Test
     @DisplayName("Получение заказов конкретного пользователя - авторизованный пользователь, проверка поля[name]")
     public void orderGetError() {
-        Assert.assertTrue(getOrders(null,401)
-                .contains("You should be authorised"));
+        Response response = getOrders(null);
+        checkStatusCode(response,401);
+        Assert.assertTrue(response.getBody().asString().contains("You should be authorised"));
     }
 
     @After

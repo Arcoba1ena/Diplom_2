@@ -10,27 +10,23 @@ public class UserUpdateApi extends RequestApi {
     private final static String method = "/auth/user";
 
     @Step("request PATCH | method '/auth/user' [with token]")
-    public String requestUserUpdate(Object model, String token, Integer code) {
-        Response response = given().auth()
+    public Response requestUserUpdate(Object model, String token) {
+        return given().auth()
                 .oauth2(token.replace("Bearer ", ""))
                 .header("Content-type", "application/json")
                 .and()
                 .body(model)
                 .when()
                 .patch(method);
-        response.then().statusCode(code);
-        return response.getBody().asString();
     }
 
     @Step("request PATCH | method '/auth/user' [without token]")
-    public String requestUserUpdate(Object model, Integer code) {
-        Response response = given()
+    public Response requestUserUpdate(Object model) {
+        return given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(model)
                 .when()
                 .patch(method);
-        response.then().statusCode(code);
-        return response.getBody().asString();
     }
 }

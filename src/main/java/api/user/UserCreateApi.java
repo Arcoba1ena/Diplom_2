@@ -10,14 +10,12 @@ public class UserCreateApi extends RequestApi {
     private final static String method = "/auth/register";
 
     @Step("request POST | method '/auth/register'")
-    public String requestUserCreate(Object model, Integer code) {
-        Response response = given()
+    public Response requestUserCreate(Object model) {
+        return given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(model)
                 .when()
                 .post(method);
-        response.then().statusCode(code);
-        return response.getBody().asString();
     }
 }

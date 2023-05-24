@@ -1,11 +1,12 @@
 package test.user.login;
 
-import org.junit.After;
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import io.restassured.response.Response;
 import org.junit.runners.Parameterized.Parameters;
 
 import functions.user.UserLoginFunctions;
@@ -13,6 +14,7 @@ import functions.user.UserCreateFunctions;
 import models.response.user.UserResponseModel;
 import io.qameta.allure.junit4.DisplayName;
 
+import static functions.Util.checkStatusCode;
 import static functions.Util.deserialize;
 import static functions.user.UserDeleteFunctions.getUserDelete;
 
@@ -47,31 +49,35 @@ public class UserLoginTest extends UserLoginFunctions {
     UserCreateFunctions userCreate = new UserCreateFunctions();
 
     public void getUserLogin(){
-        responseCreate = deserialize(userCreate.getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
+        Response response = userCreate.getUserCreate(name, email, password);
+        checkStatusCode(response,200);
+        responseCreate = deserialize(response.getBody().asString(), UserResponseModel.class);
     }
 
     @Test
     @DisplayName("Авторизация пользователя - авторизация пользователя")
     public void userLoginCheckAuth() {
-        responseLogin = deserialize(getUserLogin(email, password, 200),
-                UserResponseModel.class);
+        Response response = getUserLogin(email, password);
+        responseLogin = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,200);
         Assert.assertTrue(responseLogin.success);
     }
 
     @Test
     @DisplayName("Авторизация пользователя - авторизация с неверным [email]")
     public void userLoginCheckUnValidEmail() {
-        responseLogin = deserialize(getUserLogin(email + "/", password, 401),
-                UserResponseModel.class);
+        Response response = getUserLogin(email + "/", password);
+        responseLogin = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,401);
         Assert.assertFalse(responseLogin.success);
     }
 
     @Test
     @DisplayName("Авторизация пользователя - авторизация с неверным [password]")
     public void userLoginCheckUnValidPassword() {
-        responseLogin = deserialize(getUserLogin(email, password + "/", 401),
-                UserResponseModel.class);
+        Response response = getUserLogin(email, password + "/");
+        responseLogin = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,401);
         Assert.assertFalse(responseLogin.success);
     }
 

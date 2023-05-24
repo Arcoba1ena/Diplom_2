@@ -5,12 +5,14 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import io.restassured.response.Response;
 import org.junit.runners.Parameterized.Parameters;
 
 import functions.user.UserCreateFunctions;
 import io.qameta.allure.junit4.DisplayName;
 import models.response.user.UserResponseModel;
 
+import static functions.Util.checkStatusCode;
 import static functions.Util.deserialize;
 import static functions.user.UserDeleteFunctions.getUserDelete;
 
@@ -39,43 +41,47 @@ public class UserCreateErrorTest extends UserCreateFunctions {
         };
     }
 
-    private UserResponseModel response;
+    private UserResponseModel responseModel;
 
     @Test
     @DisplayName("Создание пользователя - проверка [дубликата пользователя]")
     public void userCreateCheckDuplicate() {
-        response = deserialize(getUserCreate(name, email, password, 200),
-                UserResponseModel.class);
+        Response response = getUserCreate(name, email, password);
+        responseModel = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,200);
 
-        UserResponseModel responseError = deserialize(getUserCreate(name, email, password, 403),
-                UserResponseModel.class);
+        Response responseErr = getUserCreate(name, email, password);
+        UserResponseModel responseError = deserialize(responseErr.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(responseErr,403);
 
-        getUserDelete(response.getAccessToken());
+        getUserDelete(responseModel.getAccessToken());
         Assert.assertFalse(responseError.success);
-
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля [name]")
     public void userCreateCheckRequiredName() {
-        response = deserialize(getUserCreate(null, email, password, 403),
-                UserResponseModel.class);
-        Assert.assertFalse(response.success);
+        Response response = getUserCreate(null, email, password);
+        responseModel = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,403);
+        Assert.assertFalse(responseModel.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля [email]")
     public void userCreateCheckRequiredEmail() {
-        response = deserialize(getUserCreate(name, null, password, 403),
-                UserResponseModel.class);
-        Assert.assertFalse(response.success);
+        Response response = getUserCreate(name, null, password);
+        responseModel = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,403);
+        Assert.assertFalse(responseModel.success);
     }
 
     @Test
     @DisplayName("Создание пользователя - проверка обязательности поля [password]")
     public void userCreateCheckRequiredPassword() {
-        response = deserialize(getUserCreate(name, email, null, 403),
-                UserResponseModel.class);
-        Assert.assertFalse(response.success);
+        Response response = getUserCreate(name, email, null);
+        responseModel = deserialize(response.getBody().asString(), UserResponseModel.class);
+        checkStatusCode(response,403);
+        Assert.assertFalse(responseModel.success);
     }
 }
